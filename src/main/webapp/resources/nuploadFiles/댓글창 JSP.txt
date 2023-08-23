@@ -1,0 +1,22 @@
+<c:if test="${requestScope.commentList!=null }">
+		<c:forEach var="comment" items="${requestScope.commentList }">
+		<tr> 
+		<td width="150">
+		 	<div>
+		 		${comment.comment_id}<br>
+		 		<font size="3" color="lightgray"><${comment.comment_date }</font>
+		 	</div>
+		 </td>
+		 <td width="550">
+		 	<div class="text_wrapper">
+		 		${comment.comment_content }
+		 	</div>
+		 	</td>
+		 	<td width="100">
+		 		<div id="btn" style="text-align:center;">
+		 		<a href="#">[수정]</a>
+		 		<a href="#">[삭제]</a>
+		 		</c:if>
+		 		</div>
+		 		</td>
+		 		</c:forEach>

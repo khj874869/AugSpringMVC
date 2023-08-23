@@ -12,7 +12,15 @@ public class Notice {
 	private String noticeFilename;
 	private String noticeFilepath;
 	private long noticeFilelength;
-	
+	private String noticeFilerename;
+	public String getNoticeFilerename() {
+		return noticeFilerename;
+	}
+
+	public void setNoticeFilerename(String noticeFilerename) {
+		this.noticeFilerename = noticeFilerename;
+	}
+
 	public int getNoticeNo() {
 		return noticeNo;
 	}
@@ -89,7 +97,7 @@ public class Notice {
 	public String toString() {
 		return "공지사항 [번호=" + noticeNo + ", 제목=" + noticeSubject + ", 내용=" + noticeContent
 				+ ", 작성자=" + noticeWriter + ", 작성일=" + nCreateDate + ", 수정일=" + nUpdateDate
-				+ ", 파일이름=" + noticeFilename + ", 파일경로=" + noticeFilepath + ", 파일크기="
+				+ ", 파일이름=" + noticeFilename + ",파일 리네임=" + noticeFilerename + ", 파일경로=" + noticeFilepath + ", 파일크기="
 				+ noticeFilelength + "]";
 	}
 }	

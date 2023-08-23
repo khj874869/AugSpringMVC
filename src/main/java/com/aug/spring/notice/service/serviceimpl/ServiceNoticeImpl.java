@@ -64,4 +64,14 @@ public class ServiceNoticeImpl implements ServiceNotice {
 		int result = store.searchforMap(session,paraMap);
 		return result;
 	}
+	@Override
+	public Notice selectNoticeByNo(int noticeNo) {
+		Notice notice = store.detailNotice(session,noticeNo);
+		return notice;
+	}
+	@Override
+	public int updateNotice(Notice notice) {
+		int result = store.updateNotice(session,notice);
+		return result;
+	}
 }

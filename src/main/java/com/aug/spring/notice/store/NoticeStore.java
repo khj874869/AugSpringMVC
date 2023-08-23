@@ -28,5 +28,9 @@ public interface NoticeStore {
 	List<Notice> searchByKeyword(SqlSession session,Map<String,String> paraMap,PageInfo pInfo );
 
 	int searchforMap(SqlSession session, Map<String, String> paraMap);
+
+	Notice detailNotice(SqlSession session,int noticeNo);
+
+	int updateNotice(SqlSession session, Notice notice);
 	
 }

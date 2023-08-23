@@ -76,5 +76,17 @@ public class NoticeStoreLogic implements NoticeStore {
 		int result = session.selectOne("NoticeMapper.selectListCount", paraMap);
 		return result;
 	}
+
+	@Override
+	public Notice detailNotice(SqlSession session,int noticeNo) {
+		Notice notice = session.selectOne("NoticeMapper.selectNoticeBynoticeNo",noticeNo);
+		return notice;
+	}
+
+	@Override
+	public int updateNotice(SqlSession session, Notice notice) {
+		int result = session.update("NoticeMapper.updateNotice",notice);
+		return result;
+	}
 	
 }

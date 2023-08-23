@@ -36,4 +36,8 @@ public interface ServiceNotice {
 	 */
 	int getListCount(Map<String, String> paraMap);
 
+	Notice selectNoticeByNo(int noticeNo);
+
+	int updateNotice(Notice notice);
+
 }
