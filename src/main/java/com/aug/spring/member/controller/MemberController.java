@@ -95,11 +95,17 @@ public class MemberController {
 
 			}
 	}
-	@RequestMapping(value="/member/myinfo.kh",method=RequestMethod.GET)
-	public String getmembermyinfo(HttpServletRequest request,HttpServletResponse response,
-			Model model ,@RequestParam("memberId") String memberId) {
+	@RequestMapping(value="/member/myinfo.kh",method= {RequestMethod.GET , RequestMethod.POST})
+	public String getmembermyinfo(HttpServletRequest request,
+			Model model ,
+			//@RequestParam("memberId") String memberId
+			HttpSession session) {
 	try {
-		Member mOne = service.checkedMember(memberId);
+		String memberId = (String)session.getAttribute("memberId");
+		Member mOne = null;
+		if(memberId!=""&&memberId!=null) {
+			mOne = service.checkedMember(memberId);
+		}
 		if(mOne!=null) {
 			model.addAttribute("member",mOne);
 			return "member/myinfo";

@@ -198,7 +198,7 @@ public class NoticeController {
 				}
 				int result = servicenotice.updateNotice(notice);
 				if(result>0){
-					return "redirect:/notice/detai.kh?noticeNo="+notice.getNoticeNo();
+					return "redirect:/notice/detail.kh?noticeNo="+notice.getNoticeNo();
 				}
 				else {
 					model.addAttribute("msg", "관리자에게 문의 요망");
