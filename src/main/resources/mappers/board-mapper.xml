@@ -32,4 +32,5 @@
 	<select id="selectOnebyNo" resultMap="BoardResultMap">
 	SELECT * FROM BOARD_TBL WHERE BOARD_NO = #{boardNo}
 	</select>
+
 </mapper>

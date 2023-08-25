@@ -22,6 +22,37 @@ public class MemberController {
 	private MemberService service;
 	
 
+	@RequestMapping(value="/home.kh",method=RequestMethod.GET)
+	public String login() {
+		return "/home";
+	}
+	@RequestMapping(value="/member/login.kh",method=RequestMethod.POST)
+	public String logindo(HttpServletRequest request,HttpServletResponse response,
+			Model model, @ModelAttribute Member member)
+	{
+		try {
+			int result= service.selectOneById(member);
+			if(result>0) {
+				model.addAttribute("memberName", member.getMemberName());
+				model.addAttribute("memberId", member.getMemberId());
+				return "/home";
+			}else {
+				model.addAttribute("msg", "로그인에 실패 하였습니다.");
+				model.addAttribute("error", "로그인 실패");
+				model.addAttribute("url","/member/register.kh");
+				return "common/errorpage";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", "관리자에게 문의 요망");
+			model.addAttribute("error", e.getMessage());
+			model.addAttribute("url","/member/register.kh");
+			return "common/errorpage";
+			
+		}
+		
+	}
 	@RequestMapping(value="/member/register.kh",method=RequestMethod.GET)
 	public String registerform() {
 		return "member/register";
@@ -50,38 +81,6 @@ public class MemberController {
 		
 	}	
 	}
-	@RequestMapping(value="/home.kh",method=RequestMethod.GET)
-	public String login() {
-		return "/home";
-	}
-
-	@RequestMapping(value="/member/login.kh",method=RequestMethod.POST)
-	public String logindo(HttpServletRequest request,HttpServletResponse response,
-			Model model, @ModelAttribute Member member)
-	{
-		try {
-			int result= service.selectOneById(member);
-			if(result>0) {
-				model.addAttribute("memberName", member.getMemberName());
-				model.addAttribute("memberId", member.getMemberId());
-				return "/home";
-			}else {
-				model.addAttribute("msg", "로그인에 실패 하였습니다.");
-				model.addAttribute("error", "로그인 실패");
-				model.addAttribute("url","/member/register.kh");
-				return "common/errorpage";
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "관리자에게 문의 요망");
-			model.addAttribute("error", e.getMessage());
-			model.addAttribute("url","/member/register.kh");
-			return "common/errorpage";
-			
-		}
-		
-	}
 	@RequestMapping(value="/member/logout.kh",method=RequestMethod.GET)
 	public String logout(HttpSession session, Model model) {
 			if(session !=null) {
@@ -103,7 +102,7 @@ public class MemberController {
 	try {
 		String memberId = (String)session.getAttribute("memberId");
 		Member mOne = null;
-		if(memberId!=""&&memberId!=null) {
+		if(memberId!=""&& memberId!=null) {
 			mOne = service.checkedMember(memberId);
 		}
 		if(mOne!=null) {

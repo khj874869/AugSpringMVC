@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,21 +21,25 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.aug.spring.board.domain.BoardDomain;
 import com.aug.spring.board.domain.PageInfo;
+import com.aug.spring.board.domain.Reply;
 import com.aug.spring.board.service.BoardService;
+import com.aug.spring.board.service.ReplyService;
 
 @Controller
 public class BoardController {
  @Autowired
  private BoardService service;
-
- 
+ @Autowired
+ private ReplyService rserivce;
  @RequestMapping(value="/board/detail.kh",method=RequestMethod.GET)
  public ModelAndView showBoardDetail(ModelAndView mv,@RequestParam("boardNo") Integer boardNo) {
 	try {
 		
 		BoardDomain board =service.selectBoardOne(boardNo);
+		 List<Reply> reflyList = rserivce.selectRelfList(boardNo);
+
 		if(board!=null) {
-		mv.addObject("board",board);	 
+		mv.addObject("board",board).addObject("reflyList",reflyList);	 
 		mv.setViewName("board/detail");
 		
 		}
@@ -47,7 +52,7 @@ public class BoardController {
 	} catch (Exception e) {
 		mv.addObject("msg", "게시글 등록이 완료되지 않았습니다.");
 		mv.addObject("error",e.getMessage());
-		mv.addObject("url", "/board/write.do");
+		mv.addObject("url", "/board/write.kh");
 		mv.setViewName("common/errorpage");
 	}
 	return mv;
@@ -104,7 +109,7 @@ public class BoardController {
 		} catch (Exception e) {
 			mv.addObject("msg", "게시글 등록이 완료되지 않았습니다.");
 			mv.addObject("error",e.getMessage());
-			mv.addObject("url", "/board/write.do");
+			mv.addObject("url", "/board/write.kh");
 			mv.setViewName("common/errorpage");
 		}
 	 	return mv;

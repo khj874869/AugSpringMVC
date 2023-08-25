@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
 <link rel="stylesheet" href="../resources/css/board.css">
 </head>
 <body>
- 	<h1>공지 등록</h1>
+ 	<h1>상세표</h1>
  	<form action="/board/detail.kh" method="post" enctype="multipart/form-data">
  		<ul>
  			<li>
@@ -32,57 +33,113 @@
  			</li>
  		
  		</ul>
+ 	
  		<div>
  			<button type="button" onclick="showModifyPage();">수정하기</button>
 			<button>삭제하기</button>
  		</div>
+ 			</form>
  		<!-- 댓글등록 -->
- 		<form action="/board/addreply.kh" method="post">
- 		<table align="left" width="500px" border=1>
+ 		<form action="/reply/addreply.kh" method="post">
+ 		<input type="hidden" name="refBoardNo" value="${board.boardNo }">
+ 		<input type="hidden" name="replyWriter" value="${board.boardWriter }">
+ 		<table  width="500px" border=1>
  		<tr >
 		<td>
-		<textarea rows="3" cols="55"></textarea>
+		<textarea rows="3" cols="55" name="replyContent"></textarea>
 		<input type="submit" value="완료">		
  		</td>
  		</table>
  		</form>
  		<!-- 댓글목록 -->
-		<table  align="left" width="500px" border=1>
+ 		<table   width="500px" border=1>
+ 		<c:forEach var="reply " items="${replyList }">	
 		<tr>
-			<td>일용자</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
+			<td>${reply.replyWriter }</td>
+			<td>${reply.replyContent }</td>
+			<td>${reply.rCreateDate }</td>
 			<td>
-			<a href="#">수정하기</a>
+			<a href="javascript:void(0);" onclick="showModifyform(this,${reply.replyContent})">수정하기</a>
 			<a href="#">삭제하기</a>
 			</td>
 		</tr>
-			<td>일용자</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-			<td>
-			<a href="#">수정하기</a>
-			<a href="#">삭제하기</a>
-			</td>
-		</tr>
-			<td>일용자</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-			<td>
-			<a href="#">수정하기</a>
-			<a href="#">삭제하기</a>
-			</td>
-		</tr>
+			 <tr id="replymodifyform"  style="display:none;">
+<!-- 			<form action="/reply/update.kh"method="post">
+ -->		<%-- 	<input type="hidden" name="replyNo" value="${reply.reply }">
+			<input type="hidden" name="refBoardNo" value="${reply.refBoardNo }"> --%>
+<!-- 			</form> -->
+			<td colspan="3"><input id="replyContent" type="text" name="replyContent" size=50></td>
+			<td><input type="button"  onclick = "modifyReply(this,${reply.replyNo },${reply.refBoardNo });" value="완료"></td>
+			</tr>  
+		
+		
+	<!-- 	<tr id="replymodifyform"  style="display:none;">
+			<td colspan="3"><input type="text" size=20></td>
+			<td><input type="button" value="완료"></td>
+		</tr> -->
+		</c:forEach>
 		</table>
+	
  		
- 	</form> 	
  	<script >
  		function showModifyPage(){
  			const boardNo = "${board.boardNo}";
  			location.href="/board/modify.kh?boardNo="+boardNo;
+ 		}
+ 		
+ 		function showNoticeList(){
+ 			loction.href="/board/list.kh";
+ 		}
+ 		function modifyReply(){
+ 			// DOM 프로그래밍을 이용하는 방법
+ 			const form = document.createElement("form");
+ 			form.action="/reply/update.kh";
+ 			form.method="post";
+ 			const input = document.createElement("input");
+ 			input.type="hidden";
+ 			input.value="12312";
+ 			input.name="replyNo";
+ 			const input2 = document.createElement("input");
+ 			input2.type="hidden";
+ 			input2.value="123123";
+ 			input2.name="refBoardNo"; 			
+ 			const input3 = document.createElement("input");
+ 			input3.type="text";
+ 			//input3.value=document.querySelector("#replyContent").value;
+ 			input3.value= obj;
+ 			input3.name="replyContent";
+ 			form.appendChild(input);
+ 			form.appendChild(input2);
+ 			form.appendChild(input3);
+ 			doucment.body.appendChild(form);
+ 			form.submit();
+ 		}
+ 		function showModifyform(obj,replyConmment){
+ 			obj.parentElement.parentElement.nextElementSibling.style.display="";
+ 			//2. DOM프로그래밍을 이용하는 방법
+ 			 <tr id="replymodifyform"  style="display:none;">
+			<td colspan="3"><input type="text" size=20></td>
+			<td><input type="button" value="완료"></td>
+			</tr>  
+ 			/* const trTag = document.createElement("tr");
+			const tdTag1 = document.createElement("td");
+			tdTag1.colSpan =3;
+			const inputTag1 = document.createElement("input");
+			input.type="text";
+			input.size=50;
+			input.value=replyConmment;
+			tdTag1.appendChild(inputTag);
+			const tdTag2 = document.createElement("td");
+			const inputTag2 = document.createElement("input");
+			inputTag2.Type="button";
+			inputTag2.value="완료";
+			tdTag2.appendChild(inputTag2);
+			const prevTrTag = obj.parentElement.parentElement;
+			if(!prevTrTag.nextElementSibling.querySelector("input"))
+		    prevTrTag.parentMode.InsertBefore(trTag,prevTrTage.nextSibling); */
+ 			//1.HTML태그,displayname 사용하는 방법
+ 	//		documentquerySelector("#replyModifyForm").style.display="";
+ //			obj.parentElement.parentElement.nextElementSibling.style.display="";
  		}
  	</script>
 </body>

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/member/register.kh" method="post">
+	<form action="/member/update.kh" method="post">
 	<fieldset>
 	<legend>회원가입</legend>
 			<ul>

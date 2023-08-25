@@ -9,7 +9,7 @@
 </head>
 <body>
  	<h1>공지 등록</h1>
- <form action="/notice/modify.do" method="post" enctype="multipart/form-data">
+ <form action="/notice/modify.kh" method="post" enctype="multipart/form-data">
 <!--  	수정할때, 리다이렉트 될 때 사용 --> 	
 	<input type="hidden" name="noticeNo" value="${notice.noticeNo }">
 <!-- 	기존 업로드 파일 체크할 때 사용 --> 	
