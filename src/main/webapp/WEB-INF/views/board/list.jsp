@@ -35,7 +35,7 @@
 			<c:forEach var="board" items="${bList }" varStatus="i">
 				<tr>
 					<td>${i.count }</td>
-					<c:url var="detailUrl" value="/board/detail.kh">
+					<c:url var="detailUrl" value="/board/detail.kh?memberId=${memberId }">
 						<c:param name="boardNo" value="${board.boardNo}"></c:param>
 					</c:url>
 					<td><a href="${detailUrl}" > ${board.boardTitle }</a></td>

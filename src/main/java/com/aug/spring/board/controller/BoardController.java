@@ -34,21 +34,20 @@ public class BoardController {
  @RequestMapping(value="/board/detail.kh",method=RequestMethod.GET)
  public ModelAndView showBoardDetail(ModelAndView mv,@RequestParam("boardNo") Integer boardNo) {
 	try {
-		
-		BoardDomain board =service.selectBoardOne(boardNo);
-		 List<Reply> reflyList = rserivce.selectRelfList(boardNo);
-
-		if(board!=null) {
-		mv.addObject("board",board).addObject("reflyList",reflyList);	 
-		mv.setViewName("board/detail");
-		
+		BoardDomain boardOne = service.selectBoardOne(boardNo);
+		if(boardOne != null) {
+			List<Reply> replyList = rserivce.selectRelfList(boardNo);
+			if(replyList.size() > 0) {
+				mv.addObject("rList", replyList);
+			}
+			mv.addObject("board", boardOne);
+			mv.setViewName("board/detail");
+		}else {
+			mv.addObject("msg", "게시글 조회가 완료되지 않았습니다.");
+			mv.addObject("error", "게시글 상세 조회 실패");
+			mv.addObject("url", "/board/list.kh");
+			mv.setViewName("common/errorPage");
 		}
-		else {
-			mv.addObject("msg","게시글 조회가 완료되지 않았습니다.").addObject("error", "게시글 상세 조회 실패").addObject("url","board/list");
-			mv.setViewName("common/erroPage");
-			
-		}
-		return mv;
 	} catch (Exception e) {
 		mv.addObject("msg", "게시글 등록이 완료되지 않았습니다.");
 		mv.addObject("error",e.getMessage());
@@ -92,21 +91,31 @@ public class BoardController {
 	 return mv;
  }
  @RequestMapping(value="/board/write.kh" , method=RequestMethod.POST)
- public ModelAndView boardRegister(@ModelAttribute BoardDomain board,
+ public ModelAndView boardRegister(@ModelAttribute BoardDomain board,HttpSession session,
 		 @RequestParam(value="uploadFile", required =false) MultipartFile uploadFile,ModelAndView mv,
 		 HttpServletRequest request ) {
 	 	try {
-			if(uploadFile!=null && !uploadFile.getOriginalFilename().equals("")) {
+	 		String boardWriter = (String)session.getAttribute("memberId");
+	 		if(boardWriter !=null&&  !boardWriter.equals("")) {
+	 			board.setBoardWriter(boardWriter);
+	 		
+	 		if(uploadFile!=null && !uploadFile.getOriginalFilename().equals("")) {
 				//파일정보(이름 리네임 경로 크기 ) 및 파일저장
 				Map<String,Object> nMap = this.saveFile(request,uploadFile);
 				board.setBoardFilename((String)nMap.get("fileName"));
 				board.setBoardFilerename((String)nMap.get("fileRename"));
 				board.setBoardFilepath((String)nMap.get("filePath"));
-				board.setBoardFilelength((String)nMap.get("fileLength"));
+				board.setBoardFilelength((long)nMap.get("fileLength"));
 			}
 			int result = service.writeBoard(board);
 			mv.setViewName("redirect:/board/list.kh");
-		} catch (Exception e) {
+		}else {
+			 mv.addObject("msg","게시판 삭제 실패");
+			 mv.addObject("error","게시판 삭제 실패");
+			 mv.addObject("url","/board/list.kh");
+			 mv.setViewName("common/errorpage");
+		}
+	 		} catch (Exception e) {
 			mv.addObject("msg", "게시글 등록이 완료되지 않았습니다.");
 			mv.addObject("error",e.getMessage());
 			mv.addObject("url", "/board/write.kh");
@@ -145,4 +154,114 @@ public class BoardController {
 	 fileMap.put("fileLength", fileLength);
 	 return fileMap;
  }
+ @RequestMapping(value="/board/delete.kh",method=RequestMethod.GET)
+ public ModelAndView deleteBoard(ModelAndView mv, @ModelAttribute BoardDomain board,HttpSession session) {
+	 String url ="";
+	 try {
+		 url = "/board/list.kh?boardNo="+board.getBoardNo();
+		 String memberId= (String)session.getAttribute("memberId");
+		 String boardWriter=board.getBoardWriter();
+		 if(boardWriter!=null&& boardWriter.equals(memberId)) {
+			 int result = service.deleteBoard(board);
+			 if(result>0) {
+				 mv.setViewName("redirect:"+url);
+			 }else {
+				 mv.addObject("msg","게시판 삭제 실패");
+				 mv.addObject("error","게시판 삭제 실패");
+				 mv.addObject("url",url);
+				 mv.setViewName("common/errorpage");
+			 }
+		 }
+	} catch (Exception e) {
+		mv.addObject("msg",
+				"관리자에게 문의 바랍니다.");
+		mv.addObject("error",e.getMessage());
+		mv.addObject("url", url);
+		mv.setViewName("common/errorpage");
+	}
+	 
+	 
+	 return mv;
+ }
+ @RequestMapping(value="/board/modify.kh",method=RequestMethod.GET)
+ public ModelAndView ModifyBoard(ModelAndView mv,@RequestParam("boardNo") Integer boardNo,HttpSession session)
+ {
+		try {
+			BoardDomain board = service.selectBoardOne(boardNo);
+			mv.addObject("board",board);
+			mv.setViewName("board/modify");
+
+		} catch (Exception e) {
+			mv.addObject("msg",
+					"관리자에게 문의 바랍니다.");
+			mv.addObject("error",e.getMessage());
+			mv.addObject("url", "/board/write.kh");
+			mv.setViewName("common/errorpage");
+		}
+
+	 
+	 return mv;
+ }
+ 
+ 
+ @RequestMapping(value="/board/modify.kh",method=RequestMethod.POST)
+ public ModelAndView updateBoard(@ModelAttribute BoardDomain board,
+		 HttpSession session,
+		 ModelAndView mv,
+		 HttpServletRequest request
+		 ,
+		 @RequestParam(value="uploadFile",required=false) MultipartFile uploadFile) {
+	 String url ="";
+	 try {
+		String memberId = (String)session.getAttribute("memberId");
+		String boardWriter = board.getBoardWriter();
+		url = "/board/list.kh?boardNo"+ board.getBoardNo();
+		if(boardWriter!=null&&board.getBoardWriter().equals(memberId)) {
+		if(uploadFile!=null && !uploadFile.isEmpty()) {
+			String filename = board.getBoardFilerename();
+			if(filename!=null) {
+				this.deleteFile(request,filename);
+			}
+			Map<String, Object> boardMap = this.saveFile(request, uploadFile);
+			String boardFilename = (String)boardMap.get("fileName");
+			String boardFilerename =(String)boardMap.get("fileRename");
+			long boardFilelength = (long)boardMap.get("fileLength");
+			board.setBoardFilename(boardFilename);
+			board.setBoardFilerename(boardFilerename);
+			board.setBoardFilepath((String)boardMap.get("filePath"));
+			board.setBoardFilelength(boardFilelength);
+		}
+			int result = service.updateboard(board);
+			if(result>0) {
+				mv.setViewName("redirect:/board/detail.kh?boardNo="+board.getBoardNo());
+			}
+			else {
+				 mv.addObject("msg","게시판 삭제 실패");
+				 mv.addObject("error","게시판 삭제 실패");
+				 mv.addObject("url",url);
+				 mv.setViewName("common/errorpage");
+			}
+	
+	}
+	 }catch (Exception e) {
+		mv.addObject("msg",
+				"관리자에게 문의 바랍니다.");
+		mv.addObject("error",e.getMessage());
+		mv.addObject("url", url);
+		mv.setViewName("common/errorpage");
+	}
+	 return mv;
+ }
+
+
+
+
+private void deleteFile(HttpServletRequest request, String filename) {
+ String root = request.getSession().getServletContext().getRealPath("resources");
+ String delFilepath = root+"\\buploadFiles\\"+filename;
+ File file = new File(delFilepath);
+ if(file.exists()) {
+	 file.delete();
+ }
+}
 }

@@ -33,55 +33,79 @@
  			</li>
  		
  		</ul>
- 	
- 		<div>
- 			<button type="button" onclick="showModifyPage();">수정하기</button>
-			<button>삭제하기</button>
- 		</div>
- 			</form>
- 		<!-- 댓글등록 -->
- 		<form action="/reply/addreply.kh" method="post">
- 		<input type="hidden" name="refBoardNo" value="${board.boardNo }">
- 		<input type="hidden" name="replyWriter" value="${board.boardWriter }">
- 		<table  width="500px" border=1>
- 		<tr >
-		<td>
-		<textarea rows="3" cols="55" name="replyContent"></textarea>
-		<input type="submit" value="완료">		
- 		</td>
- 		</table>
+ 		<br><br>
+ 		<c:url var="boardDelUrl" value="/board/delete.kh">
+ 			<c:param name="boardWriter" value="${board.boardWriter }"></c:param>
+ 			<c:param name="boardNo" value="${board.boardNo}" ></c:param>
+ 		</c:url>
+ 		<c:url var="boardModifyUrl" value="/board/modify.kh">
+ 			<c:param name="boardWriter" value='${board.boardWriter }'></c:param>
+ 			<c:param name="baordNo" value='${board.boardNo }'></c:param>
+ 		</c:url>
  		</form>
- 		<!-- 댓글목록 -->
- 		<table   width="500px" border=1>
- 		<c:forEach var="reply " items="${replyList }">	
-		<tr>
-			<td>${reply.replyWriter }</td>
-			<td>${reply.replyContent }</td>
-			<td>${reply.rCreateDate }</td>
-			<td>
-			<a href="javascript:void(0);" onclick="showModifyform(this,${reply.replyContent})">수정하기</a>
-			<a href="#">삭제하기</a>
-			</td>
-		</tr>
-			 <tr id="replymodifyform"  style="display:none;">
-<!-- 			<form action="/reply/update.kh"method="post">
- -->		<%-- 	<input type="hidden" name="replyNo" value="${reply.reply }">
-			<input type="hidden" name="refBoardNo" value="${reply.refBoardNo }"> --%>
-<!-- 			</form> -->
-			<td colspan="3"><input id="replyContent" type="text" name="replyContent" size=50></td>
-			<td><input type="button"  onclick = "modifyReply(this,${reply.replyNo },${reply.refBoardNo });" value="완료"></td>
-			</tr>  
-		
-		
-	<!-- 	<tr id="replymodifyform"  style="display:none;">
-			<td colspan="3"><input type="text" size=20></td>
-			<td><input type="button" value="완료"></td>
-		</tr> -->
-		</c:forEach>
-		</table>
+ 		<div>
+ 			<c:if test="${board.boardWriter eq memberId} ">
+				<button type="button" onclick="showModifyPage('${boardMofiyUrl}');">수정하기</button>
+				<button type="button" onclick="deleteBoard('${boardDelUrl}');">삭제하기</button>
+				<button type="button" onclick="showNoticeList();">목록으로</button>
+			</c:if>
+		</div>
+			<!-- 댓글 등록 -->
+			<hr>
+			<form action="/reply/add.kh" method="post">
+				<input type="hidden" name="refBoardNo" value="${board.boardNo }">
+				<table width="500" border="1">
+					<tr>
+						<td>
+							<textarea rows="3" cols="55" name="replyContent"></textarea>
+						</td>
+						<td>
+							<input type="submit" value="완료">
+						</td>
+					</tr>
+				</table>
+			</form>
+			<!-- 댓글 목록 -->
+			<table width="550" border="1">
+				<c:forEach var="reply" items="${rList }">
+					<tr>
+						<td>${reply.replyWriter }</td>
+						<td>${reply.replyContent }</td>
+						<td>${reply.rCreateDate }</td>
+						<td>
+							<a href="javascript:void(0);" onclick="showReplyModifyForm(this,'${reply.replyContent}');">수정하기</a>
+							<c:url var="delUrl" value="/reply/delete.kh">
+								<c:param name="replyNo" value="${reply.replyNo }"></c:param>
+								<!-- 성공하면 디테일로 가기위해 필요한 boardNo 셋팅 -->
+								<c:param name="refBoardNo" value="${reply.refBoardNo }"></c:param>
+							</c:url>
+							<a href="javascript:void(0)" onclick="deleteReply('${delUrl }');")>삭제하기</a>
+						</td>
+					</tr>
+					<tr id="replyModifyForm" style="display:none;">
+<!-- 						<form action="/reply/update.kh" method="post"> -->
+<%-- 							<input type="hidden" name="replyNo" value="${reply.replyNo }"> --%>
+<%-- 							<input typeC="hidden" name="refBoardNo" value="${reply.refBoardNo }"> --%>
+<%-- 							<td colspan="3"><input type="text" size="50" name="replyContent" value="${reply.replyContent }"></td> --%>
+<!-- 							<td><input type="submit" value="완료"></td> -->
+<!-- 						</form> -->
+							<td colspan="3"><input id="replyContent" type="text" size="50" name="replyContent" value="${reply.replyContent }"></td>
+							<td><input type="button" onclick="replyModify(this,'${reply.replyNo}','${reply.refBoardNo }');" value="완료"></td>
+					</tr>
+				</c:forEach>
+			</table>
 	
  		
  	<script >
+ 	const showModifyPage=(boardModify)=>{
+ 		loaction.href=boardModifyUrl;
+ 	}
+ 	const deleteBoard=(boardDelUrl)=>{
+ 		location.href=boardDelUrl;
+ 	}
+ 	function deleteReply(delUrl){
+ 		location.href=delUrl;
+ 	}
  		function showModifyPage(){
  			const boardNo = "${board.boardNo}";
  			location.href="/board/modify.kh?boardNo="+boardNo;
@@ -90,7 +114,7 @@
  		function showNoticeList(){
  			loction.href="/board/list.kh";
  		}
- 		function modifyReply(){
+ 		function modifyReply(obj,replyNo,replyBoardNo){
  			// DOM 프로그래밍을 이용하는 방법
  			const form = document.createElement("form");
  			form.action="/reply/update.kh";
@@ -106,7 +130,7 @@
  			const input3 = document.createElement("input");
  			input3.type="text";
  			//input3.value=document.querySelector("#replyContent").value;
- 			input3.value= obj;
+ 			input3.value= obj.parentElement.previousElementSibling.childNodes[0].value;
  			input3.name="replyContent";
  			form.appendChild(input);
  			form.appendChild(input2);
@@ -114,7 +138,7 @@
  			doucment.body.appendChild(form);
  			form.submit();
  		}
- 		function showModifyform(obj,replyConmment){
+ 		function showReplyModifyForm(obj,replyConmment){
  			obj.parentElement.parentElement.nextElementSibling.style.display="";
  			//2. DOM프로그래밍을 이용하는 방법
  			 <tr id="replymodifyform"  style="display:none;">

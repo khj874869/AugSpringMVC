@@ -12,4 +12,6 @@ public interface ReplyService {
 
 	int updateReply(Reply reply);
 
+	int deleteReply(Reply reply);
+
 }

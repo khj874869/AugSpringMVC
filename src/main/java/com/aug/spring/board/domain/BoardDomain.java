@@ -10,15 +10,15 @@ public class BoardDomain {
 	private String boardFilename;
 	private String boardFilerename;
 	private String boardFilepath;
-	private String boardFilelength;
+	private long boardFilelength;
 	private int boardCount;
 	private Date bCreateDate;
 	private Date bUpdateDate;
 	private char bStatus;
-	public String getBoardFilelength() {
+	public long getBoardFilelength() {
 		return boardFilelength;
 	}
-	public void setBoardFilelength(String boardFilelength) {
+	public void setBoardFilelength(long boardFilelength) {
 		this.boardFilelength = boardFilelength;
 	}
 	public int getBoardNo() {

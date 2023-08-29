@@ -24,13 +24,34 @@
 	VALUES(SEQ_BOARD_NO.NEXTVAL,#{boardTitle},#{boardContent},#{boardWriter},#{boardFilename},#{boardFilerename},#{boardFilepath},#{boardFilelength},DEFAULT,DEFAULT,DEFAULT,DEFAULT)
 	</insert>	
 	<select id="selectListCount" resultType="_int">
-	SELECT COUNT(*) FROM BOARD_TBL
+	SELECT COUNT(*) FROM BOARD_TBL WHERE B_STATUS='Y'
 	</select>	
 	<select id="selectBoardList" resultMap="BoardResultMap">
-	SELECT * FROM BOARD_TBL ORDER BY B_CREATE_DATE DESC
+	SELECT * FROM BOARD_TBL WHERE B_STATUS='Y' ORDER BY B_CREATE_DATE DESC
 	</select>
 	<select id="selectOnebyNo" resultMap="BoardResultMap">
 	SELECT * FROM BOARD_TBL WHERE BOARD_NO = #{boardNo}
 	</select>
-
+	<update id="deleteBoard">
+	UPDATE  BOARD_TBL SET  B_STATUS = 'N' WHERE BOARD_NO=#{boardNo} AND BOARD_WRITER =#{boardWriter}
+	</update>
+	<update id="updateBoard">
+	UPDATE  BOARD_TBL SET BOARD_CONTENT=#{boardContent} ,B_UPDATE_DATE=#{bUpdateDate},BOARD_NO=#{boardTitle}
+	</update>
+	<select id="selectListCountSearch" resultType="_int">
+	SELECT COUNT(*) FROM BOARD_TBL
+	<if test="searchCondition == 'all'">	
+	WHERE BOARD_CONTENT LIKE '%'||#{searchKeyword}||'%' OR  BOARD_WRITER LIKE '%'|| #{searchKeyword}||'%' OR  BOARD_TITLE LIKE '%'||#{searchKeyword}||'%'
+	</if>
+	<if test="searchCondition=='content'">
+	WHERE BOARD_CONTENT LIKE '%'||#{searchKeyword}||'%' 
+	</if>
+	<if test="searchCondition=='writer'">
+	WHERE BOARD_WRITER LIKE '%'|| #{searchKeyword}||'%' 
+	</if>
+	<if test="searchCondition=='title'">
+	WHERE BOARD_TITLE LIKE '%'||#{searchKeyword}||'%'
+	</if>
+	AND B_STATUS = 'Y'
+</select>
 </mapper>

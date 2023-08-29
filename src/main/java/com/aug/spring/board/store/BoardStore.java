@@ -17,4 +17,8 @@ public interface BoardStore {
 
 	BoardDomain selectOneBoard(SqlSession session, Integer boardNo);
 
+	int deleteBoard(SqlSession session, BoardDomain board);
+
+	int updateBoard(SqlSession session, BoardDomain board);
+
 }

@@ -15,4 +15,8 @@ public interface BoardService {
 
 	BoardDomain selectBoardOne(Integer boardNo);
 
+	int deleteBoard(BoardDomain board);
+
+	int updateboard(BoardDomain board);
+
 }

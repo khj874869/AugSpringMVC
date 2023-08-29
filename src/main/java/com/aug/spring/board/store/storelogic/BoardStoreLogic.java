@@ -39,5 +39,17 @@ public class BoardStoreLogic implements BoardStore{
 		BoardDomain board = session.selectOne("BoardMapper.selectOnebyNo", boardNo);
 		return board;
 	}
+
+	@Override
+	public int deleteBoard(SqlSession session, BoardDomain board) {
+		int result = session.update("BoardMapper.deleteBoard",board);
+		return result;
+	}
+
+	@Override
+	public int updateBoard(SqlSession session, BoardDomain board) {
+		int result = session.update("BoardMapper.updateBoard",board);
+		return result;
+	}
 	
 }

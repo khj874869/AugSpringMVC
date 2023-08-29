@@ -15,6 +15,8 @@ public interface replyStore {
 
 	int updateReply(SqlSession session, Reply reply);
 
+	int deleteReply(SqlSession session, Reply reply);
+
 
 
 }

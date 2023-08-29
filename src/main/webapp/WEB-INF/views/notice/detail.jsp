@@ -29,7 +29,6 @@
 				<img alt="첨부파일" src="../resources/nuploadFiles/${notice.noticeFilename }">			
 			<a href="../resources/nuploadFiles/${notice.noticeFilename }" download>${notice.noticeFilename }</a>
  			</li>
- 		
  		</ul>
  		<div>
  			<button type="button" onclick="showModifyPage();">수정하기</button>

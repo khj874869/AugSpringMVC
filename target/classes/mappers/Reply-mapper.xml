@@ -25,4 +25,7 @@
 	<update id="updateReply">
 		UPDATE REPLY_TBL SET REPLY_CONTENT=#{replyContent} ,R_UPDATE_DATE=default where REPLY_NO = #{replyNo}
 	</update>
+	<delete id="deleteReply">
+	UPDATE REPLY_TBL SET R_STATUS = 'N' WHERE REPLY_NO=#{replyNo} AnD REPLY_WRITER=#{replyWriter}
+	</delete>
 </mapper>

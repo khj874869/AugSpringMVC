@@ -30,5 +30,11 @@ public class replyStoreLogic implements replyStore{
 		return result;
 	}
 
+	@Override
+	public int deleteReply(SqlSession session, Reply reply) {
+		int result = session.delete("ReplyMapper.deleteReply",reply);
+		return result;
+	}
+
 
 }

@@ -94,7 +94,7 @@ public class MemberController {
 
 			}
 	}
-	@RequestMapping(value="/member/myinfo.kh",method= {RequestMethod.GET , RequestMethod.POST})
+	@RequestMapping(value="/member/mypage.kh",method= {RequestMethod.GET , RequestMethod.POST})
 	public String getmembermyinfo(HttpServletRequest request,
 			Model model ,
 			//@RequestParam("memberId") String memberId

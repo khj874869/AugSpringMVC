@@ -18,7 +18,8 @@
  			</li>
  			<li>
  				<label>작성자</label>
- 				<input type="text" name="boardWriter">
+ 			<%-- 	<input type="text" name="boardWriter" value="${memeberId }" readonly --%>>
+ 				<span>${memberId }</span>
  			</li>
  			<li>
  				<label>내용</label>
@@ -33,6 +34,7 @@
  		<div>
  			<input type="submit" value="등록">
  		</div>
+ 		</fieldset>
 	</form>
 </body>
 </html>
